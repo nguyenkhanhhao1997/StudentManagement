@@ -1,4 +1,5 @@
 ﻿using StudentManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,17 +8,35 @@ namespace StudentManagement.Services
 {
     public class  TeacherRepository : ITeacherRepository
     {
+        /// <summary>
+        /// dbcontext
+        /// </summary>
         public readonly EFDataContext _db;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="db"></param>
         public TeacherRepository(EFDataContext db)
         {
             this._db = db;
         }
 
+        /// <summary>
+        /// Get list teachers
+        /// </summary>
+        /// <returns>list teachers</returns>
         public IList<Teacher> GetListTeachers()
         {
             return this._db.Teachers.ToList();
         }
-        public async Task<Teacher> AddNewTeacher(TeacherInput teacherInput)
+
+        /// <summary>
+        /// Add a new teacher
+        /// </summary>
+        /// <param name="teacherInput"></param>
+        /// <returns>teacher</returns>
+        public async Task<Teacher> AddNewTeacher(Teacher teacherInput)
         {
             var teacher = new Teacher()
             {

@@ -17,16 +17,16 @@ namespace StudentManagement.Controllers
             this._teacherRepository = teacherRepository;
         }
 
-        // GET: api/<ProductsController>
         [HttpGet]
+        [Route("GetListTeachers")]
         public IEnumerable<Teacher> Get()
         {
             return this._teacherRepository.GetListTeachers();
         }
 
-        // POST api/<ProductsController>
         [HttpPost]
-        public async Task<IActionResult> Post(TeacherInput teacherInput)
+        [Route("AddNewTeacher")]
+        public async Task<IActionResult> Post(Teacher teacherInput)
         {
 
             var teacher = await this._teacherRepository.AddNewTeacher(teacherInput);

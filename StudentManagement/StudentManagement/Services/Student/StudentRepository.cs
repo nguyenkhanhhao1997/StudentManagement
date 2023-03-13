@@ -1,4 +1,5 @@
-﻿using StudentManagement.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using StudentManagement.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +10,31 @@ namespace StudentManagement.Services
 {
     public class StudentRepository: IStudentRepository
     {
+        /// <summary>
+        /// Dbcontext
+        /// </summary>
         public readonly EFDataContext _db;
-        public StudentRepository(EFDataContext db)
+
+        /// <summary>
+        /// TeacherRepository
+        /// </summary>
+        public readonly ITeacherRepository _teacherRepository;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="teacherRepository"></param>
+        public StudentRepository(EFDataContext db, ITeacherRepository teacherRepository)
         {
             this._db = db;
+            this._teacherRepository = teacherRepository;
         }
+
+        /// <summary>
+        /// Get list students
+        /// </summary>
+        /// <returns>list students</returns>
         public IList<Student> GetListStudents()
         {
             var students = _db.Students.Select(s => new Student
@@ -27,7 +48,13 @@ namespace StudentManagement.Services
             return students;
         }
 
-        public async Task<Student> AddNewStudent(StudentInput studentInput)
+
+        /// <summary>
+        /// Add a new student
+        /// </summary>
+        /// <param name="studentInput"></param>
+        /// <returns>status</returns>
+        public async Task<Student> AddNewStudent(Student studentInput)
         {
             var student = new Student()
             {
@@ -39,6 +66,38 @@ namespace StudentManagement.Services
             this._db.Students.Add(student);
             await this._db.SaveChangesAsync();
             return student;
+        }
+
+        /// <summary>
+        /// Add a list students
+        /// </summary>
+        /// <param name="listStudentInput"></param>
+        /// <returns>status</returns>
+        public async Task<bool> AddListStudents(AddListStudentInput listStudentInput)
+        {
+            try
+            {
+                using (var transaction = this._db.Database.BeginTransaction())
+                {
+                    //Add list teachers
+                    foreach (var input in listStudentInput.Teachers)
+                    {
+                        await this._teacherRepository.AddNewTeacher(input);
+                    }
+
+                    foreach (var input in listStudentInput.Students)
+                    {
+                        await this.AddNewStudent(input);
+                    }
+                    transaction.Commit();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
