@@ -36,8 +36,8 @@ namespace StudentManagement.Controllers
         public IEnumerable<Student> GetListStudents()
         {
             var students = this._studentRepository.GetListStudents();
-            students.OrderBy(x => x.Teacher.TeacherName).ThenBy(s => s.DateOfBirth);
-            return students;
+            var result = students.OrderBy(x => x.Teacher.TeacherName).ThenBy(s => s.DateOfBirth).ToList();
+            return result;
         }
 
         /// <summary>
@@ -67,20 +67,20 @@ namespace StudentManagement.Controllers
         [Route("AddListStudents")]
         public async Task<IActionResult> AddListStudents(AddListStudentInput listStudentInput)
         {
-            if (listStudentInput == null || listStudentInput.Teachers.Count < 2 || listStudentInput.Students.Count < 3)
+            if (listStudentInput == null || listStudentInput.Teachers.Count < 2 || listStudentInput.Students.Count < 100)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something Went Wrong"); ;
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something Went Wrong");
             }
             else
             {
                 var result = await this._studentRepository.AddListStudents(listStudentInput);
                 if (result == true)
                 {
-                    return Ok("Added Successfully");
+                    return Ok("ok");
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Something Went Wrong"); ;
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Something Went Wrong");
                 }
             }
         }

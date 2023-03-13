@@ -79,14 +79,19 @@ namespace StudentManagement.Services
             {
                 using (var transaction = this._db.Database.BeginTransaction())
                 {
-                    //Add list teachers
+                    var listTeacherIdNew = new List<Teacher>();
+                    //Add teachers first, to get the new teacher id
                     foreach (var input in listStudentInput.Teachers)
                     {
-                        await this._teacherRepository.AddNewTeacher(input);
+                        listTeacherIdNew.Add(await this._teacherRepository.AddNewTeacher(input));
                     }
 
                     foreach (var input in listStudentInput.Students)
                     {
+                        //input.TeacherId is the index of list teacher that call from api
+                        //use the index to find in the list teacher to get the exactly id
+                        var teacher = listTeacherIdNew[input.TeacherId];
+                        input.TeacherId = teacher.TeacherId;
                         await this.AddNewStudent(input);
                     }
                     transaction.Commit();

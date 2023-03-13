@@ -5,11 +5,10 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 
 /*Import api */
-// import { GET_ALL_CATEGORIES, POST_ADD_PRODUCT } from "../api/apiService";
+import { ADD_NEW_LIST_STUDENT } from "../api/apiService";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,8 +44,8 @@ export default function AddListStudents() {
   const classes = useStyles();
   /* SET ATTRIBUTE FORM ADD PRODUCT */
   const [listTeacher, setListTeacher] = useState([
-    { teacherName: "New Teacher" },
-    { teacherName: "New Teacher" },
+    { teacherName: "New Teacher 1" },
+    { teacherName: "New Teacher 2" },
   ]);
 
   const [numberStudent, setNumberStudent] = useState(5);
@@ -77,20 +76,7 @@ export default function AddListStudents() {
       teacherId: 0,
     },
   ]);
-
   const [checkAdd, setCheckAdd] = useState(false);
-  const [teacherId, setTeacherId] = useState(0);
-
-  // useEffect(() => {
-  //   setNumberStudent(10);
-  // }, []);
-  /* BEFORE RUN */
-  // useEffect(() => {
-  //   /* GET API CATEGORIES */
-  //   // GET_ALL_CATEGORIES("categories").then((item) => {
-  //   //   setCategories(item.data);
-  //   // });
-  // }, []);
 
   /* EVENT CHANGE TEXTFIELD IN FORM */
   const handleAddNewTeacher = (event) => {
@@ -102,21 +88,67 @@ export default function AddListStudents() {
 
   const handleChangNumberOfStudent = (event) => {
     let number = event.target.value;
-    let newStudent = {
-      studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
-      teacherId: 0,
-    };
-    let newList = [];
-    for (var i = 0; i < number; i++) {
-      newList.unshift(newStudent);
+    if (number <= 50) {
+      if (listStudent.length > number) {
+        //cut list
+        let data = listStudent.slice(0, number);
+        setListStudent(data);
+      } else {
+        //append list
+        let newStudent = {
+          studentName: "New Student",
+          dateOfBirth: "2012-04-23T18:25:43.511",
+          teacherId: 0,
+        };
+        let newList = [...listStudent];
+        for (var i = 0; i < number - listStudent.length; i++) {
+          newList.push(newStudent);
+        }
+        setListStudent(newList);
+      }
+      setNumberStudent(number);
     }
-    setNumberStudent(number);
+  };
+
+  const handleChangeStudentName = (event, idx) => {
+    let newList = listStudent.map((item, i) => {
+      if (i === idx) {
+        item.studentName = event.target.value;
+        return item;
+      } else {
+        return item;
+      }
+    });
+    setListStudent(newList);
+  };
+
+  const handleChangeTeacherID = (event, idx) => {
+    console.log(idx);
+    let newList = listStudent.map((item, i) => {
+      if (i === idx) {
+        console.log("change");
+        item.teacherId = parseInt(event.target.value);
+        return item;
+      } else {
+        return item;
+      }
+    });
+    setListStudent(newList);
+  };
+
+  const handleChangeDob = (event, idx) => {
+    let newList = listStudent.map((item, i) => {
+      if (i === idx) {
+        item.dateOfBirth = event.target.value;
+        return item;
+      } else {
+        return item;
+      }
+    });
     setListStudent(newList);
   };
 
   const handleChangeTeacherName = (event, idx) => {
-    console.log(idx);
     let newList = listTeacher.map((item, i) => {
       if (i === idx) {
         item.teacherName = event.target.value;
@@ -129,23 +161,30 @@ export default function AddListStudents() {
   };
 
   /* EVENT BUTTON SUBMIT FORM ADD PRODUCT */
-  const addProduct = (event) => {
+  const submitListStudents = (event) => {
     // event.preventDefault();
-    // if (title !== "" && body !== "" && slug !== "" && category > 0) {
-    //   let product = {
-    //     Title: title,
-    //     Body: body,
-    //     Slug: slug,
-    //     idCategory: category,
-    //   };
-    //   POST_ADD_PRODUCT(`products`, product).then((item) => {
-    //     if (item.data === 1) {
-    //       setCheckAdd(true);
-    //     }
-    //   });
-    // } else {
-    //   alert("Bạn chưa nhập đủ thông tin!");
-    // }
+    if (listTeacher.length < 2) {
+      alert("Teachers should be more than or equal to 2 ");
+      return;
+    }
+    if (listStudent.length < 5) {
+      alert("Students should be more than or equal to 30 ");
+      return;
+    }
+
+    let data = {
+      students: listStudent,
+      teachers: listTeacher,
+    };
+
+    ADD_NEW_LIST_STUDENT("students/addliststudents", data).then((item) => {
+      console.log(item);
+      if (item && item.data === "ok") {
+        setCheckAdd(true);
+      } else {
+        alert("something went wrong");
+      }
+    });
   };
 
   /* CHECK setAdd, if true redirect to Home component */
@@ -167,6 +206,7 @@ export default function AddListStudents() {
                 listTeacher.map((row, idx) => (
                   <Grid item xs={12} key={idx}>
                     <TextField
+                      required
                       onChange={(event) => handleChangeTeacherName(event, idx)}
                       label="Teacher Name"
                       value={row.teacherName}
@@ -199,6 +239,7 @@ export default function AddListStudents() {
             </Typography>
             <TextField
               // onChange={handleChangeTitle}
+              required
               type="number"
               label="Numer of Student"
               variant="outlined"
@@ -209,11 +250,19 @@ export default function AddListStudents() {
               inputProps={{ max: 50 }}
             />
             {listStudent.length > 0 &&
-              listStudent.map((row) => (
-                <Grid item xs={12} sm container className={classes.studentGrid}>
+              listStudent.map((row, idx) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm
+                  container
+                  className={classes.studentGrid}
+                  key={idx}
+                >
                   <Grid item xs={4}>
                     <TextField
-                      // onChange={handleChangeTitle}
+                      required
+                      onChange={(event) => handleChangeStudentName(event, idx)}
                       label="Student Name"
                       variant="outlined"
                       className={classes.txtInput}
@@ -223,21 +272,36 @@ export default function AddListStudents() {
                   </Grid>
 
                   <Grid item xs={4}>
-                    <TextField
-                      // onChange={handleChangeTitle}
+                    {/* <TextField
+                      // onChange={(event) => handleChangeStudentName(event, idx)}
                       type="date"
                       variant="outlined"
                       className={classes.txtInput}
                       value={row.dateOfBirth}
                       size="small"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    /> */}
+                    <TextField
+                      required
+                      onChange={(event) => handleChangeDob(event, idx)}
+                      variant="outlined"
+                      className={classes.txtInput}
+                      value={row.dateOfBirth}
+                      size="small"
+                      // InputLabelProps={{
+                      //   shrink: true,
+                      // }}
                     />
                   </Grid>
 
                   <Grid item xs={4}>
                     <TextField
+                      required
                       select
-                      value={teacherId}
-                      // onChange={handleChangeCategory}
+                      value={row.teacherId}
+                      onChange={(event) => handleChangeTeacherID(event, idx)}
                       SelectProps={{
                         native: true,
                       }}
@@ -258,7 +322,7 @@ export default function AddListStudents() {
             <Grid item xs={12}>
               <Button
                 type="button"
-                // onClick={handleAddNewStudent}
+                onClick={submitListStudents}
                 fullWidth
                 variant="contained"
                 color="primary"
