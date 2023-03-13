@@ -1,5 +1,5 @@
 import axios from "axios";
-let API_URL = "https://localhost:5001/api";
+let API_URL = "https://localhost:44382/api";
 const callApi = (endpoint, method = "GET", body) => {
   return (
     axios({
@@ -23,21 +23,21 @@ const callApi = (endpoint, method = "GET", body) => {
 };
 export default callApi;
 
-export function GET_ALL_PRODUCTS(endpoint) {
+export function GET_LIST_STUDENTS(endpoint) {
   return callApi(endpoint, "GET");
 }
-export function GET_PRODUCT_ID(endpoint, id) {
-  return callApi(endpoint + "/" + id, "GET");
-}
-export function POST_ADD_PRODUCT(endpoint, data) {
+export function ADD_NEW_LIST_STUDENT(endpoint, data) {
   return callApi(endpoint, "POST", data);
 }
-export function PUT_EDIT_PRODUCT(endpoint, data) {
-  return callApi(endpoint, "PUT", data);
-}
-export function DELETE_PRODUCT_ID(endpoint) {
-  return callApi(endpoint, "DELETE");
-}
-export function GET_ALL_CATEGORIES(endpoint) {
-  return callApi(endpoint, "GET");
-}
+// export function POST_ADD_PRODUCT(endpoint, data) {
+//   return callApi(endpoint, "POST", data);
+// }
+// export function PUT_EDIT_PRODUCT(endpoint, data) {
+//   return callApi(endpoint, "PUT", data);
+// }
+// export function DELETE_PRODUCT_ID(endpoint) {
+//   return callApi(endpoint, "DELETE");
+// }
+// export function GET_ALL_CATEGORIES(endpoint) {
+//   return callApi(endpoint, "GET");
+// }

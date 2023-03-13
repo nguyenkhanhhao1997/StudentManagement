@@ -42,9 +42,11 @@ export default function MenuTop() {
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -58,28 +60,13 @@ export default function MenuTop() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>
-        <Link to="/products" className={classes.linkTo}>
-          Product
+        <Link to="/home" className={classes.linkTo}>
+          Home
         </Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        <Link to="/categories" className={classes.linkTo}>
-          Categories
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/login" className={classes.linkTo}>
-          Login
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/register" className={classes.linkTo}>
-          Register
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/" className={classes.linkTo} onClick={btnLogout}>
-          logout
+        <Link to="/add-list-student" className={classes.linkTo}>
+          Add list students
         </Link>
       </MenuItem>
     </Menu>
@@ -93,12 +80,9 @@ export default function MenuTop() {
     <div className={classes.root}>
       <AppBar position="static" color="primary">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" className={classes.title}>
             <Link to="/" className={classes.linkHome}>
-              Demo React ASP Core
+              Student management
             </Link>
           </Typography>
           <IconButton
