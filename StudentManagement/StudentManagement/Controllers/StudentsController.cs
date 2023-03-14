@@ -20,9 +20,8 @@ namespace StudentManagement.Controllers
         /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="db"></param>
         /// <param name="studentRepository"></param>
-        public StudentsController(EFDataContext db, IStudentRepository studentRepository)
+        public StudentsController(IStudentRepository studentRepository)
         {
             this._studentRepository = studentRepository;
         }
@@ -67,7 +66,7 @@ namespace StudentManagement.Controllers
         [Route("AddListStudents")]
         public async Task<IActionResult> AddListStudents(AddListStudentInput listStudentInput)
         {
-            if (listStudentInput == null || listStudentInput.Teachers.Count < 2 || listStudentInput.Students.Count < 100)
+            if (listStudentInput == null || listStudentInput.Teachers.Count < 2 || listStudentInput.Students.Count < 30)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something Went Wrong");
             }

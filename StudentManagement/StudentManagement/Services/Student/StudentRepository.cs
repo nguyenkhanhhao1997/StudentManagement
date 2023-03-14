@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudentManagement.Models;
+﻿using StudentManagement.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +46,6 @@ namespace StudentManagement.Services
             return students;
         }
 
-
         /// <summary>
         /// Add a new student
         /// </summary>
@@ -89,7 +86,7 @@ namespace StudentManagement.Services
                     foreach (var input in listStudentInput.Students)
                     {
                         //input.TeacherId is the index of list teacher that call from api
-                        //use the index to find in the list teacher to get the exactly id
+                        //use the index to find the exactly teacherId in list new teacher
                         var teacher = listTeacherIdNew[input.TeacherId];
                         input.TeacherId = teacher.TeacherId;
                         await this.AddNewStudent(input);

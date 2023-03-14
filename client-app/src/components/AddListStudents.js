@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -35,8 +35,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  studentGrid: {
+  rowGrid: {
     paddingTop: "10px",
+  },
+  btnDelete: {
+    marginTop: "3px",
+    color: "red",
   },
 }));
 
@@ -44,39 +48,65 @@ export default function AddListStudents() {
   const classes = useStyles();
   /* SET ATTRIBUTE FORM ADD PRODUCT */
   const [listTeacher, setListTeacher] = useState([
-    { teacherName: "New Teacher 1" },
-    { teacherName: "New Teacher 2" },
+    { teacherName: "Teacher 1" },
+    { teacherName: "Teacher 2" },
   ]);
 
-  const [numberStudent, setNumberStudent] = useState(5);
   const [listStudent, setListStudent] = useState([
     {
       studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
+      dateOfBirth: "2000-01-01",
       teacherId: 0,
     },
     {
       studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
+      dateOfBirth: "2000-01-01",
       teacherId: 0,
     },
     {
       studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
+      dateOfBirth: "2000-01-01",
       teacherId: 0,
     },
     {
       studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
+      dateOfBirth: "2000-01-01",
       teacherId: 0,
     },
     {
       studentName: "New Student",
-      dateOfBirth: "2012-04-23T18:25:43.511",
+      dateOfBirth: "2000-01-01",
       teacherId: 0,
     },
   ]);
+  const [numberStudent, setNumberStudent] = useState(5);
   const [checkAdd, setCheckAdd] = useState(false);
+
+  /* EVENT DELETE*/
+  const handleDeleteStudent = (idx) => {
+    let newList = listStudent;
+    newList = newList.filter((element, index) => index !== idx);
+    setListStudent(newList);
+    setNumberStudent(newList.length);
+  };
+
+  const handleDeleteTeacher = (idx) => {
+    // delete teacher
+    let newList = listTeacher;
+    newList = newList.filter((element, index) => index !== idx);
+    setListTeacher(newList);
+
+    //update teacherid of student
+    let newStudent = listStudent.map((item) => {
+      if (item.teacherId === idx) {
+        var newIdx = idx + 1;
+        if (newIdx > newList.length) newIdx = 0; //teacherid = 0 if item has been removed is the last
+        item.teacherId = newIdx;
+      }
+      return item;
+    });
+    setListStudent(newStudent);
+  };
 
   /* EVENT CHANGE TEXTFIELD IN FORM */
   const handleAddNewTeacher = (event) => {
@@ -88,20 +118,20 @@ export default function AddListStudents() {
 
   const handleChangNumberOfStudent = (event) => {
     let number = event.target.value;
-    if (number <= 50) {
+    if (number <= 60) {
       if (listStudent.length > number) {
-        //cut list
+        //slice list
         let data = listStudent.slice(0, number);
         setListStudent(data);
       } else {
         //append list
-        let newStudent = {
-          studentName: "New Student",
-          dateOfBirth: "2012-04-23T18:25:43.511",
-          teacherId: 0,
-        };
         let newList = [...listStudent];
         for (var i = 0; i < number - listStudent.length; i++) {
+          let newStudent = {
+            studentName: "New Student",
+            dateOfBirth: "2000-01-01",
+            teacherId: 0,
+          };
           newList.push(newStudent);
         }
         setListStudent(newList);
@@ -123,15 +153,11 @@ export default function AddListStudents() {
   };
 
   const handleChangeTeacherID = (event, idx) => {
-    console.log(idx);
     let newList = listStudent.map((item, i) => {
       if (i === idx) {
-        console.log("change");
         item.teacherId = parseInt(event.target.value);
-        return item;
-      } else {
-        return item;
       }
+      return item;
     });
     setListStudent(newList);
   };
@@ -140,10 +166,8 @@ export default function AddListStudents() {
     let newList = listStudent.map((item, i) => {
       if (i === idx) {
         item.dateOfBirth = event.target.value;
-        return item;
-      } else {
-        return item;
       }
+      return item;
     });
     setListStudent(newList);
   };
@@ -152,33 +176,57 @@ export default function AddListStudents() {
     let newList = listTeacher.map((item, i) => {
       if (i === idx) {
         item.teacherName = event.target.value;
-        return item;
-      } else {
-        return item;
       }
+      return item;
     });
     setListTeacher(newList);
   };
 
   /* EVENT BUTTON SUBMIT FORM ADD PRODUCT */
-  const submitListStudents = (event) => {
-    // event.preventDefault();
+  const validateInput = () => {
+    //validate teacher
     if (listTeacher.length < 2) {
-      alert("Teachers should be more than or equal to 2 ");
-      return;
-    }
-    if (listStudent.length < 5) {
-      alert("Students should be more than or equal to 30 ");
-      return;
+      return "Teachers should be more than or equal to 2";
     }
 
+    for (let i = 0; i < listTeacher.length; i++) {
+      if (
+        listTeacher[i].teacherName === null ||
+        listTeacher[i].teacherName === ""
+      ) {
+        return "Teacher name is required";
+      }
+    }
+
+    //validate student
+    if (listStudent.length < 30 || listStudent.length > 60) {
+      return "Students should be less than 60 and more than 30";
+    }
+    console.log("list student");
+    for (let j = 0; j < listStudent.length; j++) {
+      if (
+        listStudent[j].studentName === null ||
+        listStudent[j].studentName === ""
+      ) {
+        return "Student name is required";
+      }
+    }
+
+    return null;
+  };
+
+  const submitListStudents = (event) => {
+    let validate = validateInput();
+    if (validate) {
+      alert(validate);
+      return;
+    }
     let data = {
       students: listStudent,
       teachers: listTeacher,
     };
 
     ADD_NEW_LIST_STUDENT("students/addliststudents", data).then((item) => {
-      console.log(item);
       if (item && item.data === "ok") {
         setCheckAdd(true);
       } else {
@@ -195,16 +243,22 @@ export default function AddListStudents() {
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        {/* Teacher section */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography className={classes.title} variant="h4">
-              Add Teacher
+              Teachers
             </Typography>
-            <Grid item xs={12} sm container>
-              {listTeacher.length > 0 &&
-                listTeacher.map((row, idx) => (
-                  <Grid item xs={12} key={idx}>
+            {listTeacher.length > 0 &&
+              listTeacher.map((row, idx) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm
+                  container
+                  className={classes.rowGrid}
+                  key={idx}
+                >
+                  <Grid item xs={10}>
                     <TextField
                       required
                       onChange={(event) => handleChangeTeacherName(event, idx)}
@@ -215,19 +269,30 @@ export default function AddListStudents() {
                       size="small"
                     />
                   </Grid>
-                ))}
-              <Grid item xs={4}>
-                <Button
-                  type="button"
-                  onClick={handleAddNewTeacher}
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  className={classes.submit}
-                >
-                  Add Teacher
-                </Button>
-              </Grid>
+
+                  <Grid item xs={2}>
+                    <Button
+                      type="button"
+                      onClick={() => handleDeleteTeacher(idx)}
+                      color="default"
+                      className={classes.btnDelete}
+                    >
+                      X
+                    </Button>
+                  </Grid>
+                </Grid>
+              ))}
+            <Grid item xs={4}>
+              <Button
+                type="button"
+                onClick={handleAddNewTeacher}
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.submit}
+              >
+                Add Teacher
+              </Button>
             </Grid>
           </Paper>
         </Grid>
@@ -235,10 +300,9 @@ export default function AddListStudents() {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography className={classes.title} variant="h4">
-              Add Student
+              Students
             </Typography>
             <TextField
-              // onChange={handleChangeTitle}
               required
               type="number"
               label="Numer of Student"
@@ -256,7 +320,7 @@ export default function AddListStudents() {
                   xs={12}
                   sm
                   container
-                  className={classes.studentGrid}
+                  className={classes.rowGrid}
                   key={idx}
                 >
                   <Grid item xs={4}>
@@ -271,9 +335,9 @@ export default function AddListStudents() {
                     />
                   </Grid>
 
-                  <Grid item xs={4}>
-                    {/* <TextField
-                      // onChange={(event) => handleChangeStudentName(event, idx)}
+                  <Grid item xs={3}>
+                    <TextField
+                      onChange={(event) => handleChangeDob(event, idx)}
                       type="date"
                       variant="outlined"
                       className={classes.txtInput}
@@ -282,17 +346,6 @@ export default function AddListStudents() {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                    /> */}
-                    <TextField
-                      required
-                      onChange={(event) => handleChangeDob(event, idx)}
-                      variant="outlined"
-                      className={classes.txtInput}
-                      value={row.dateOfBirth}
-                      size="small"
-                      // InputLabelProps={{
-                      //   shrink: true,
-                      // }}
                     />
                   </Grid>
 
@@ -316,6 +369,17 @@ export default function AddListStudents() {
                           </option>
                         ))}
                     </TextField>
+                  </Grid>
+
+                  <Grid item xs={1}>
+                    <Button
+                      type="button"
+                      onClick={() => handleDeleteStudent(idx)}
+                      color="default"
+                      className={classes.btnDelete}
+                    >
+                      X
+                    </Button>
                   </Grid>
                 </Grid>
               ))}

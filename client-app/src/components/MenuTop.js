@@ -3,11 +3,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, IconButton } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,13 +29,6 @@ export default function MenuTop() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
-  const [logout, setLogout] = useState(false);
-
-  const btnLogout = (e) => {
-    e.preventDefault();
-    sessionStorage.clear(); //clear all session
-    setLogout(true);
-  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -71,10 +62,6 @@ export default function MenuTop() {
       </MenuItem>
     </Menu>
   );
-
-  if (logout) {
-    return <Redirect to={{ pathname: "/login" }} />;
-  }
 
   return (
     <div className={classes.root}>

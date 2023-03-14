@@ -1,7 +1,6 @@
-import logo from "./logo.svg";
 import "./App.css";
-import React, { Component } from "react";
-import { Route, Routes } from "react-router";
+import React from "react";
+import { Route } from "react-router";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MenuTop from "./components/MenuTop";

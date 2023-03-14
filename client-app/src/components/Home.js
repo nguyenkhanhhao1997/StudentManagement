@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -32,8 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
   const [listStudents, setListStudents] = useState({});
-  // const [checkDeleteProduct, setCheckDeleteProduct] = useState(false);
-  // const [close, setClose] = React.useState(false);
 
   useEffect(() => {
     /* get list students */
@@ -41,18 +38,6 @@ export default function Home() {
       setListStudents(item.data)
     );
   }, []);
-
-  /* DELETE PRODUCT ID */
-  // const deleteProductID = (id) => {
-  //   DELETE_PRODUCT_ID(`listStudents/${id}`).then((item) => {
-  //     console.log(item);
-  //     if (item.data === 1) {
-  //       setCheckDeleteProduct(true);
-  //       /* UPDATE PRODUCTS */
-  //       setListStudents(listStudents.filter((key) => key.idProduct !== id));
-  //     }
-  //   });
-  // };
 
   return (
     <div className={classes.root}>
@@ -76,34 +61,47 @@ export default function Home() {
                     <TableCell align="left" className={classes.textHeader}>
                       Date of birth
                     </TableCell>
-                    {/* <TableCell align="right">Delete</TableCell> */}
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
                   {listStudents.length > 0 &&
-                    listStudents.map((row) => (
-                      <TableRow key={row.studentId}>
-                        <TableCell align="left">
-                          {row.teacher.teacherName}
-                        </TableCell>
-                        <TableCell align="left">{row.studentName}</TableCell>
-                        <TableCell align="left">
-                          {moment(row.dateOfBirth).format("YYYY/MM/DD")}
-                          {/* {new Date(row.dateOfBirth).toLocaleDateString()} */}
-                        </TableCell>
-                        {/* <TableCell align="right">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="secondary"
-                            // onClick={() => deleteProductID(row.idProduct)}
-                          >
-                            Remove
-                          </Button>
-                        </TableCell> */}
-                      </TableRow>
-                    ))}
+                    listStudents.map((row, idx) => {
+                      if (
+                        idx === 0 ||
+                        row.teacher.teacherName !==
+                          listStudents[idx - 1].teacher.teacherName
+                      ) {
+                        //The first student of teacher
+                        return (
+                          <TableRow key={row.studentId}>
+                            <TableCell align="left">
+                              {row.teacher.teacherName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {row.studentName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {moment(row.dateOfBirth).format("YYYY/MM/DD")}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      } else {
+                        return (
+                          <TableRow key={row.studentId}>
+                            <TableCell align="left">
+                              {/* {row.teacher.teacherName} */}
+                            </TableCell>
+                            <TableCell align="left">
+                              {row.studentName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {moment(row.dateOfBirth).format("YYYY/MM/DD")}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>
