@@ -1,7 +1,6 @@
-﻿using StudentManagement.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace StudentManagement.Services
+namespace StudentManagement.Data.Models
 {
     public class AddListStudentInput
     {

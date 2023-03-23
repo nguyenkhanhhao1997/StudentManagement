@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StudentManagement.Models
+namespace StudentManagement.Data.Models
 {
     public class Student
     {

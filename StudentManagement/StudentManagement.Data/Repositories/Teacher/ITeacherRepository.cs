@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using StudentManagement.Models;
+using StudentManagement.Data.Models;
 
-namespace StudentManagement.Services
+namespace StudentManagement.Data.Repositories
 {
     public interface ITeacherRepository
     {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using StudentManagement.Models;
+using StudentManagement.Data.Models;
 using StudentManagement.Services;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace StudentManagement.Controllers
@@ -13,17 +12,17 @@ namespace StudentManagement.Controllers
     public class StudentsController : ControllerBase
     {
         /// <summary>
-        /// _studentRepository
+        /// _studentAppService
         /// </summary>
-        public readonly IStudentRepository _studentRepository;
+        public readonly IStudentAppService _studentAppService;
 
         /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="studentRepository"></param>
-        public StudentsController(IStudentRepository studentRepository)
+        /// <param name="studentAppService"></param>
+        public StudentsController(IStudentAppService studentAppService)
         {
-            this._studentRepository = studentRepository;
+            this._studentAppService = studentAppService;
         }
 
         /// <summary>
@@ -32,29 +31,10 @@ namespace StudentManagement.Controllers
         /// <returns>list students</returns>
         [HttpGet]
         [Route("GetListStudents")]
-        public IEnumerable<Student> GetListStudents()
+        public async Task<IEnumerable<Student>> GetListStudents()
         {
-            var students = this._studentRepository.GetListStudents();
-            var result = students.OrderBy(x => x.Teacher.TeacherName).ThenBy(s => s.DateOfBirth).ToList();
+            var result = await this._studentAppService.Get();
             return result;
-        }
-
-        /// <summary>
-        /// Add a new student
-        /// </summary>
-        /// <param name="studentInput"></param>
-        /// <returns>status</returns>
-        [HttpPost]
-        [Route("AddNewStudent")]
-        public async Task<IActionResult> AddNewStudent(Student studentInput)
-        {
-
-            var student = await this._studentRepository.AddNewStudent(studentInput);
-            if (student.StudentId > 0)
-            {
-                return Ok(1);
-            }
-            return Ok(0);
         }
 
         /// <summary>
@@ -72,7 +52,7 @@ namespace StudentManagement.Controllers
             }
             else
             {
-                var result = await this._studentRepository.AddListStudents(listStudentInput);
+                var result = await this._studentAppService.Insert(listStudentInput);
                 if (result == true)
                 {
                     return Ok("ok");

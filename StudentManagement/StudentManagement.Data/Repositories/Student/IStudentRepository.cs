@@ -1,9 +1,9 @@
-﻿using StudentManagement.Models;
+﻿using StudentManagement.Data.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace StudentManagement.Services
+namespace StudentManagement.Data.Repositories
 {
     public interface IStudentRepository
     {
@@ -11,7 +11,7 @@ namespace StudentManagement.Services
         /// Get list students
         /// </summary>
         /// <returns>list students</returns>
-        IList<Student> GetListStudents();
+        Task<IEnumerable<Student>> GetListStudents();
 
         /// <summary>
         /// Add a new student

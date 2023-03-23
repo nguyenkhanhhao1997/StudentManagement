@@ -1,10 +1,10 @@
-﻿using StudentManagement.Models;
+﻿using StudentManagement.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentManagement.Services
+namespace StudentManagement.Data.Repositories
 {
     public class  TeacherRepository : ITeacherRepository
     {

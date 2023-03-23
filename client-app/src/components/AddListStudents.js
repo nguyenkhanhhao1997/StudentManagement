@@ -199,7 +199,7 @@ export default function AddListStudents() {
     }
 
     //validate student
-    if (listStudent.length < 30 || listStudent.length > 60) {
+    if (listStudent.length < 5 || listStudent.length > 60) {
       return "Students should be less than 60 and more than 30";
     }
     console.log("list student");

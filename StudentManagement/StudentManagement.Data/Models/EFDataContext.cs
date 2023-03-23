@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace StudentManagement.Models
+namespace StudentManagement.Data.Models
 {
     public class EFDataContext : DbContext
     {

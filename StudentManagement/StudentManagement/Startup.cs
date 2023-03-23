@@ -1,18 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using StudentManagement.Models;
+using StudentManagement.Data.Models;
+using StudentManagement.Data.Repositories;
+using StudentManagement.Common;
 using StudentManagement.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StudentManagement
 {
@@ -30,22 +25,25 @@ namespace StudentManagement
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var cors = Configuration.GetValue<string>(StudentManagementConstant.KeyApiCorsPolicy);
+            var conn = Configuration.GetConnectionString(StudentManagementConstant.KeyConnectionString);
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:3000")
-                                                              .AllowAnyHeader()
-                                                        .AllowAnyMethod();
+                                      builder.WithOrigins(cors).AllowAnyHeader().AllowAnyMethod();
                                   });
             });
 
             services.AddControllers();
+            services.AddScoped<IStudentAppService, StudentAppService>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
-            services.AddDbContext<EFDataContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("EFDataContext")));
+            services.AddDbContext<EFDataContext>(
+                options =>
+                options.UseSqlServer(conn)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

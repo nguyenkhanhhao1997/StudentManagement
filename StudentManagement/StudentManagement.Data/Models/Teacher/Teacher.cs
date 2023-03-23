@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace StudentManagement.Models
+namespace StudentManagement.Data.Models
 {
     public class Teacher
     {

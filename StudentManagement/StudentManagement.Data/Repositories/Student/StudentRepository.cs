@@ -1,10 +1,11 @@
-﻿using StudentManagement.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using StudentManagement.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StudentManagement.Services
+namespace StudentManagement.Data.Repositories
 {
     public class StudentRepository: IStudentRepository
     {
@@ -33,16 +34,16 @@ namespace StudentManagement.Services
         /// Get list students
         /// </summary>
         /// <returns>list students</returns>
-        public IList<Student> GetListStudents()
+        public async Task<IEnumerable<Student>> GetListStudents()
         {
-            var students = _db.Students.Select(s => new Student
+            var students = await this._db.Students.Select(s => new Student
             {
                 StudentId = s.StudentId,
                 StudentName = s.StudentName,
                 DateOfBirth = s.DateOfBirth,
                 TeacherId = s.TeacherId,
                 Teacher = _db.Teachers.Where(a => a.TeacherId == s.TeacherId).FirstOrDefault()
-            }).ToList();
+            }).ToListAsync();
             return students;
         }
 
